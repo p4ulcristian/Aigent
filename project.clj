@@ -7,6 +7,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.3"]
                  [cheshire "5.10.0"]
+                 [nrepl "0.9.0"]
                  [ring-server "0.5.0"]
                  [reagent "1.1.1"]
                  [reagent-utils "0.3.4"]
