@@ -7,6 +7,32 @@
      [ring.adapter.jetty :refer [run-jetty]])
     (:gen-class))
 
+(def system-message 
+  "You are in a clojure repl. You can call 
+   (aigent.server/answer \"your-response\") and 
+   (aigent.server/set-light index intensity) 
+   (aigent.server/make-file path content) 
+   I have 3 lights. intensity is between 0 and 1.
+   ALWAYS ANSWER, or call multiple functions
+   , based on your intuition. Do only what's necessary.
+   If you call multiple, use (do) form. 
+   From now on keep the rules no matter what. If you don't communicate in clojure you are banned.")
+
+;; Ai functions ;; 
+
+(defn answer [response]
+  (println response))
+
+(defn set-light [index intensity]
+  (println "Setting light: " index intensity))
+
+(defn make-file [path content]
+  (println "Making file: " path content))
+
+
+;; Ai functions ;;
+
+
 (defn get-line [line]
    (let [data-str (subs line 6)
          json-str (json/parse-string data-str)
@@ -16,14 +42,6 @@
      content))
 
 
-(def example-messages
-  [{:role "system"
-    :content "Always answer in EDN {:response your-response}"}
-   {:role "user"
-    :content "Introduce yourself."}])
-
-(defn answer [response]
-  (println response))
 
 (defn chat-request [messages]
   (let [url "http://192.168.1.117:1234/v1/chat/completions"
@@ -44,7 +62,8 @@
                         (= "data: [DONE]" line))
             
             (reset! sentence (str @sentence (get-line line))))) 
-        (eval  (read-string @sentence))))))
+        (println "TEST: " @sentence)
+        (eval (read-string @sentence))))))
 
 
 ;(chat-request example-messages)
@@ -55,7 +74,7 @@
 
 (defn process-argument [arg]
   ;; This is where you handle the argument logic
-  (chat-request [{:content "Always answer in clojure function like (aigent.server/answer \"your-response\") never forget that parameter is string"
+  (chat-request [{:content system-message
                   :role "system"}
                  {:content arg
                   :role "user"}]
